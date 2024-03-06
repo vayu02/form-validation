@@ -6,6 +6,8 @@ const Form = ({ line1, line2, country, postCode }: AddrTypes) => {
   const postalCodeRegex =
     /^(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$/;
 
+  const francePostalCode = /^\d{5,7}$/;
+
   const [formData, setFormData] = useState({
     line1: "",
     line2: "",
@@ -22,6 +24,8 @@ const Form = ({ line1, line2, country, postCode }: AddrTypes) => {
   allCountries[0] = countries.GB.name;
   allCountries[1] = countries.FR.name;
 
+  console.log(countries.GB.name);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -34,6 +38,7 @@ const Form = ({ line1, line2, country, postCode }: AddrTypes) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(formData);
     setErrMsg(validateForm(formData));
     setSubmitted(true);
     console.log(formData);
@@ -56,11 +61,15 @@ const Form = ({ line1, line2, country, postCode }: AddrTypes) => {
     if (!data.postCode) {
       errors.postCode = "Please enter postcode";
     } else if (
-      formData.country &&
-      country === "Great Britain" &&
+      data.country === "United Kingdom" &&
       !postalCodeRegex.test(data.postCode)
     ) {
-      errors.postCode = "Invalid postcode format";
+      errors.postCode = "Invalid postcode format for United Kingdom";
+    } else if (
+      data.country === "France" &&
+      !francePostalCode.test(data.postCode)
+    ) {
+      errors.postCode = "Invalid postcode format for France";
     }
     return errors;
   };
@@ -69,7 +78,7 @@ const Form = ({ line1, line2, country, postCode }: AddrTypes) => {
     if (line1 || (line2 && country && postCode)) {
       setFormData({ ...formData, line1, line2, country, postCode });
     }
-  }, []);
+  }, [line1, line2, country, postCode]);
 
   return (
     <>

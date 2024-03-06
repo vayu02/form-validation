@@ -16,7 +16,7 @@ function App() {
 
   return (
     <main>
-      <Form />
+      <Form {...gbAddr} />
     </main>
   );
 }
